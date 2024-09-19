@@ -52,10 +52,9 @@ def convertBinary(numarray, i=0):
     return numarray
 
 # bin -> dec
-def convertDecimal(numarray, i=0):
+def convertDecimal(numarray):
     for part in numarray:
-        numarray[i] = int(numarray[i], 2)
-        i+=1
+        numarray[numarray.index(part)] = int(numarray[numarray.index(part)], 2)
     return numarray
 
 # combines the network address and wildcard to obtain a broadcast address
@@ -64,7 +63,7 @@ def combine(address, wildcard):
     for part in address:
         #print(wildcard)
         #print(address)
-        address[i] = address[i] + wildcard[i]
+        address[address.index(part)] = address[address.index(part)] + wildcard[address.index(part)]
         
         i+=1
     return address
@@ -152,7 +151,6 @@ def calculateAll(hosts_num, addr, counter=0, output=""):
 # running the function
 calculateAll(hosts[0], network_address1)
 
-print
 # appending masks and ips to separate lists
 i=0
 for part in result_to_return:
@@ -169,23 +167,16 @@ output_ips.insert(0, saved_ip)
 def __main__(i=0, count=0):
     # for loop to handle the ips
     for string in output_ips:
-        
-        #print(result_to_return[i % len(result_to_return)])
-        tmp = breakupIntoInt(result_to_return[i % len(result_to_return)])
-        
-
         range_first = breakupIntoInt(output_ips[count])
         range_first[3] += 1
         range_last = minusOneAddress(breakupIntoInt(result_to_return[i % len(result_to_return)]))
         range_last[3] -= 1
         
-        
-
         output_range_first = ""
         output_range_last = ""
         output = ""
 
-        for element in tmp:
+        for element in breakupIntoInt(result_to_return[i % len(result_to_return)]):
             output = output + str(element) + "."
         output = output[:-1]
 
