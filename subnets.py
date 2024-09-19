@@ -1,11 +1,29 @@
 import math
 import re
 
-# variables for ip and number of hosts
-# TODO: Make a input system for this - input should be converted to network address!
-ip = [192, 168, 0, 0]
-hosts = [511, 255, 122, 24, 12, 2]
+## input 
+try: 
+    input_result = re.findall(r"\d{1,3}\.{1}\d{1,3}\.{1}\d{1,3}\.{1}\d{1,3}\/{1}\d{1,2}", input("Enter the IP address you wish to use in CIDR notation (ex. 10.0.0.0/8): "))[0].split('/')
+    if int(input_result[1]) >= 32:
+        exit()
+    ip = []
+    for octet in input_result[0].split('.'):
+        ip.append(int(octet))
+except:
+    print("Wrong syntax!")
+    exit()
 
+try:
+    number_of_hosts = int(input("Number of subnets you need: "))
+    hosts = []
+    while True:
+        hosts.append(int(input("Enter the desired number of hosts in a subnet: ")))
+        if len(hosts) == number_of_hosts:
+            break
+except:
+    print("Number must be a integer!")
+    exit()
+    
 # Saving first entry (network address)
 saved_ip=""
 for entry in ip:
@@ -60,12 +78,10 @@ def convertDecimal(numarray):
 # combines the network address and wildcard to obtain a broadcast address
 def combine(address, wildcard):
     i=0
-    for part in address:
-        #print(wildcard)
-        #print(address)
-        address[address.index(part)] = address[address.index(part)] + wildcard[address.index(part)]
-        
-        i+=1
+    address[0] = address[0] + wildcard[0]
+    address[1] = address[1] + wildcard[1]
+    address[2] = address[2] + wildcard[2]
+    address[3] = address[3] + wildcard[3]
     return address
 
 # convert any address to the network address (requires mask)
@@ -150,7 +166,6 @@ def calculateAll(hosts_num, addr, counter=0, output=""):
 
 # running the function
 calculateAll(hosts[0], network_address1)
-
 # appending masks and ips to separate lists
 i=0
 for part in result_to_return:
@@ -164,7 +179,7 @@ for part in result_to_return:
 output_ips.insert(0, saved_ip)
 
 # main function that handles the printing part
-def __main__(i=0, count=0):
+def __main__(i=0, count=0, a=0):
     # for loop to handle the ips
     for string in output_ips:
         range_first = breakupIntoInt(output_ips[count])
@@ -176,7 +191,8 @@ def __main__(i=0, count=0):
         output_range_last = ""
         output = ""
 
-        for element in breakupIntoInt(result_to_return[i % len(result_to_return)]):
+        for element in minusOneAddress(breakupIntoInt(result_to_return[i % len(result_to_return)])):
+            temp = breakupIntoInt(result_to_return[i % len(result_to_return)])
             output = output + str(element) + "."
         output = output[:-1]
 
@@ -192,6 +208,8 @@ def __main__(i=0, count=0):
           i+=1
         i+=1
 
+        # resetting a
+        a=0
         # printing
         print(f' Network address: {output_ips[count]} Broadcast: {output} Usable range: {output_range_first}-{output_range_last} Mask: {output_masks[count]} Hosts: {hosts[count]} Unused hosts: {2**(32-output_masks[count])-hosts[count]-2}' )
 
