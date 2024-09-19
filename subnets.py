@@ -152,7 +152,7 @@ def calculateAll(hosts_num, addr, counter=0, output=""):
 # running the function
 calculateAll(hosts[0], network_address1)
 
-
+print
 # appending masks and ips to separate lists
 i=0
 for part in result_to_return:
@@ -169,17 +169,40 @@ output_ips.insert(0, saved_ip)
 def __main__(i=0, count=0):
     # for loop to handle the ips
     for string in output_ips:
-        temp = minusOneAddress(breakupIntoInt(result_to_return[i % len(result_to_return)]))
+        
+        #print(result_to_return[i % len(result_to_return)])
+        tmp = breakupIntoInt(result_to_return[i % len(result_to_return)])
+        
+
+        range_first = breakupIntoInt(output_ips[count])
+        range_first[3] += 1
+        range_last = minusOneAddress(breakupIntoInt(result_to_return[i % len(result_to_return)]))
+        range_last[3] -= 1
+        
+        
+
+        output_range_first = ""
+        output_range_last = ""
         output = ""
-        for element in temp:
+
+        for element in tmp:
             output = output + str(element) + "."
         output = output[:-1]
+
+        for element in range_first:
+            output_range_first = output_range_first + str(element) + "."
+        output_range_first = output_range_first[:-1]
+
+        for element in range_last:
+            output_range_last = output_range_last + str(element) + "."
+        output_range_last = output_range_last[:-1]
+
         if i % 2 == 0:
           i+=1
         i+=1
 
         # printing
-        print(f' Network address: {output_ips[count]} Broadcast: {output} Hosts: {hosts[count]} Unused hosts: {2**(32-output_masks[count])-hosts[count]-2}' )
+        print(f' Network address: {output_ips[count]} Broadcast: {output} Usable range: {output_range_first}-{output_range_last} Mask: {output_masks[count]} Hosts: {hosts[count]} Unused hosts: {2**(32-output_masks[count])-hosts[count]-2}' )
 
         # counter
         count += 1
